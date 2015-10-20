@@ -1,0 +1,28 @@
+upstream cluster {
+	ip_hash;
+	server webapp1;
+	server webapp2;
+}
+
+upstream cluster-test {
+	ip_hash;
+	server webapp1 down;
+	server webapp2 down;
+}
+
+server {
+	listen 80 default_server bind;
+
+	client_max_body_size 100m;
+
+	location / {
+		#if ($http_test_mode ~* on) {
+		#	proxy_pass  http://cluster-test;
+		#}
+		#if ($http_test_mode !~* on) {
+			proxy_pass  http://cluster;
+		#}
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+	}
+}

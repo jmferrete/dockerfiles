@@ -1,0 +1,23 @@
+loadbalancer:
+  image: jmferrete/ubuntu:nginx_as_loadbalancer
+  ports:
+   - "80:80"
+  links:
+   - webapp1:webapp1
+   - webapp2:webapp2
+webapp1:
+  image: jmferrete/ubuntu:nginx_php_memcached
+  volumes:
+   - /mnt/data/www:/var/www
+  external_links:
+   - mysite_database_1:database
+   - mysite_ftp:ftp
+   - mysite_mail:mail.mysite.com
+webapp2:
+  image: jmferrete/ubuntu:nginx_php_memcached
+  volumes:
+   - /mnt/data/www:/var/www
+  external_links:
+   - mysite_database_1:database
+   - mysite_ftp:ftp
+   - mysite_mail:mail.mysite.com
